@@ -1,0 +1,17 @@
+2024-08-27 12:24:24,727 - INFO - Data loaded
+2024-08-27 12:24:24,727 - INFO - Number of images: 100
+2024-08-27 12:24:27,148 - INFO - CPGAnet Plus network loaded
+2024-08-27 12:24:42,034 - WARNING - Unsupported operator aten::gelu encountered 40 time(s)
+2024-08-27 12:24:42,034 - WARNING - Unsupported operator aten::adaptive_max_pool2d encountered 3 time(s)
+2024-08-27 12:24:42,034 - WARNING - Unsupported operator aten::add encountered 16 time(s)
+2024-08-27 12:24:42,034 - WARNING - Unsupported operator aten::sigmoid encountered 6 time(s)
+2024-08-27 12:24:42,034 - WARNING - Unsupported operator aten::mul encountered 29 time(s)
+2024-08-27 12:24:42,035 - WARNING - Unsupported operator aten::mean encountered 7 time(s)
+2024-08-27 12:24:42,035 - WARNING - Unsupported operator aten::add_ encountered 22 time(s)
+2024-08-27 12:24:42,035 - WARNING - Unsupported operator aten::min encountered 4 time(s)
+2024-08-27 12:24:42,035 - WARNING - Unsupported operator aten::sub encountered 7 time(s)
+2024-08-27 12:24:42,035 - WARNING - Unsupported operator aten::pow encountered 3 time(s)
+2024-08-27 12:24:42,037 - INFO - FLOPs = 9.355620192 G
+2024-08-27 12:24:42,040 - INFO - Total params: 60378
+2024-08-27 12:24:42,040 - INFO - Average time taken by network is : 0.000000 ms
+2024-08-27 12:24:42,040 - INFO - Average time (total) taken by network is : 19.553805 ms
