@@ -1,4 +1,4 @@
-# [Rethinking the Atmospheric Scattering-driven Attention via Channel and Gamma Correction Prior for Low-Light Image Enhancement](https://arxiv.org/abs/2409.05274)
+# [Rethinking the Atmospheric Scattering-driven Attention via Channel and Gamma Correction Priors for Low-Light Image Enhancement](https://arxiv.org/abs/2409.05274)
 
 This is the implementation of CPGA-Net+ based on Pytorch.  
 
