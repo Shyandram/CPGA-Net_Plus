@@ -1,4 +1,4 @@
-# [Rethinking the Atmospheric Scattering-driven Attention via Channel and Gamma Correction Prior for Low-Light Image Enhancement]()
+# [Rethinking the Atmospheric Scattering-driven Attention via Channel and Gamma Correction Prior for Low-Light Image Enhancement](https://arxiv.org/abs/2409.05274)
 
 This is the implementation of CPGA-Net+ based on Pytorch.  
 
@@ -178,6 +178,15 @@ The idea is based on [A Lightweight Low-Light Image Enhancement Network via Chan
 Lots of code were borrowed from [pytorch version of AOD-Net](https://github.com/walsvid/AOD-Net-PyTorch)  
 Evaluation code was borrowed from [HWMNet](https://github.com/FanChiMao/HWMNet.git) and [HVI-CIDNet](https://github.com/Fediory/HVI-CIDNet/blob/master/measure.py)
 ```
+@misc{weng2024rethinkingatmosphericscatteringdrivenattention,
+      title={Rethinking the Atmospheric Scattering-driven Attention via Channel and Gamma Correction Priors for Low-Light Image Enhancement}, 
+      author={Shyang-En Weng and Cheng-Yen Hsiao and Shaou-Gang Miaou},
+      year={2024},
+      eprint={2409.05274},
+      archivePrefix={arXiv},
+      primaryClass={eess.IV},
+      url={https://arxiv.org/abs/2409.05274}, 
+}
 @misc{weng2024lightweight,
       title={A Lightweight Low-Light Image Enhancement Network via Channel Prior and Gamma Correction}, 
       author={Shyang-En Weng and Shaou-Gang Miaou and Ricky Christanto},

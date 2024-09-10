@@ -18,7 +18,7 @@ from data import LLIEDataset
 from loss import VGGLoss, HDRloss, HistogramMatchingLoss
 
 # from model import enhance_color
-from model_cpga import CPGAnet, CPGAnet_p, CPGAnet_blk
+from model_cpga import CPGAnet, CPGAnet_blk
 
 from config import get_config
 
