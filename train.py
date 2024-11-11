@@ -33,11 +33,11 @@ def load_data(cfg):
     val_data_transform = transforms.Compose([
         transforms.ToTensor()
     ])
-    train_ll_dataset = LLIEDataset(cfg.ori_data_path, cfg.haze_data_path, train_data_transform, dataset_type=cfg.dataset_type, cropsize=cfg.crop_size, istrain=True)
+    train_ll_dataset = LLIEDataset(cfg.ori_data_path, cfg.ll_data_path, train_data_transform, dataset_type=cfg.dataset_type, cropsize=cfg.crop_size, istrain=True)
     train_loader = torch.utils.data.DataLoader(train_ll_dataset, batch_size=cfg.batch_size, shuffle=True,
                                                num_workers=cfg.num_workers, drop_last=True, pin_memory=True)
 
-    val_ll_dataset = LLIEDataset(cfg.val_ori_data_path, cfg.val_haze_data_path, val_data_transform, False, dataset_type=cfg.dataset_type)
+    val_ll_dataset = LLIEDataset(cfg.val_ori_data_path, cfg.val_ll_data_path, val_data_transform, False, dataset_type=cfg.dataset_type)
     val_loader = torch.utils.data.DataLoader(val_ll_dataset, batch_size=cfg.val_batch_size, shuffle=False,
                                              num_workers=cfg.num_workers, drop_last=True, pin_memory=True)
 
