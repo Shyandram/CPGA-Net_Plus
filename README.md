@@ -1,6 +1,6 @@
 # Rethinking Theoretical Illumination for Efficient Low-Light Image Enhancement
 
-[![arXiv](https://img.shields.io/badge/arXiv-2409.05274-b31b1b.svg)](https://arxiv.org/abs/2409.05274)
+[![arXiv](https://img.shields.io/badge/arXiv-2409.05274v4-b31b1b.svg)](https://arxiv.org/abs/2409.05274v4)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Official PyTorch implementation of **CPGA-Net+**, **BDSF**, and **CPGA-Net++**. This project introduces an extended version of the Channel-Prior and Gamma-Estimation Network, incorporating theoretically-based attention for local and global illumination processing.
@@ -135,13 +135,14 @@ CPGA-Net_Plus/
 ```bibtex
 @article{weng2024rethinking,
     title={Rethinking Theoretical Illumination for Efficient Low-Light Image Enhancement},
-    author={Weng, Shyang-En and Hsiao, Cheng-Yen and Miaou, Shaou-Gang and Christanto, Ricky},
-    journal={arXiv preprint arXiv:2409.05274},
-    year={2024}
+    author={Weng, Shyang-En and Hsiao, Cheng-Yen and Lu, Li-Wei and Huang, Yu-Shen and Chen, Tzu-Han and Miaou, Shaou-Gang and Christanto, Ricky},
+    journal={arXiv preprint arXiv:2409.05274v4},
+    year={2024},
+    url={https://arxiv.org/abs/2409.05274v4}
 }
 
 @article{doi:10.1142/S0218001425540138,
-    author = {Weng, Shyang-En and Miaou, Shaou-Gang and Christanto, Ricky},
+    author = {Weng, Shyang-En and Hsiao, Cheng-Yen and Lu, Li-Wei and Huang, Yu-Shen and Chen, Tzu-Han and Miaou, Shaou-Gang and Christanto, Ricky},
     title = {A Lightweight Low-Light Image Enhancement Network via Channel Prior and Gamma Correction},
     journal = {International Journal of Pattern Recognition and Artificial Intelligence},
     volume = {0},
