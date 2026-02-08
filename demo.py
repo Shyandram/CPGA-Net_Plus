@@ -2,10 +2,6 @@ import os
 import logging
 from shutil import copy
 import torch
-import torch.backends.cudnn
-import torch.nn
-import torch.nn.parallel
-import torch.optim
 import torch.utils.data
 from torchvision import transforms
 from tqdm import tqdm
@@ -14,7 +10,19 @@ from config import get_config
 from model_cpga import CPGAnet, CPGAnet_blk
 from data import LLIEDataset
 # from thop import profile
-from fvcore.nn import FlopCountAnalysis
+try:
+    from fvcore.nn import FlopCountAnalysis
+    _HAS_FVCORE = True
+except Exception:
+    FlopCountAnalysis = None
+    _HAS_FVCORE = False
+
+try:
+    from ptflops import get_model_complexity_info
+    _HAS_PTFLOPS = True
+except Exception:
+    get_model_complexity_info = None
+    _HAS_PTFLOPS = False
 
 from skimage import img_as_ubyte
 import cv2, time
@@ -41,9 +49,11 @@ def load_pretrain_network(cfg, device, logger=None):
     if cfg.plus:
         net = CPGAnet_blk(
             n_channels=cfg.n_resch, gamma_n_channel=cfg.n_gammach, n_cpblks=cfg.n_cpblks, 
-            n_IAAFch=cfg.n_IAAFch, isdgf=cfg.efficient, iscpgablks=cfg.is_cpgablks
+            n_IAAFch=cfg.n_IAAFch, iscpgablks=cfg.is_cpgablks,
+            iaaf_type=cfg.iaaf_type, iaaf_ablation=cfg.iaaf_ablation, iaaf_scoring=[int(cfg.iaaf_scoring[0]), int(cfg.iaaf_scoring[1])],
+            conv=cfg.conv_type, block=cfg.block_type, bn=cfg.bn,
+            efficient =cfg.efficient, #isdgf=cfg.efficient
         ).to(device)
-        logger.info('CPGAnet Plus network loaded')
     else:
         # net = enhance_color().to(device)
         net = CPGAnet(isdgf=cfg.efficient).to(device)
@@ -94,42 +104,73 @@ def main(cfg):
     measure_network_efficiency(device, network, logger)
     print('End demo')
 
-def measure_network_efficiency(device, network, logger=None):
-    total_time = 0
-    start_t = time.time_ns()
+def measure_network_efficiency(device, network, logger=None, figsize=(400, 600)):
+    """Measure runtime and (optionally) model FLOPs/params.
+
+    This function is resilient: if `fvcore` or `ptflops` are not installed or fail,
+    it will still report timing and total parameters and will not raise.
+    """
     itr_cnt = int(1e2)
+    start_t = time.time_ns()
     with torch.no_grad():
-        for step in enumerate(range(itr_cnt)):
-            ll_image = torch.rand((1,3,400, 600)).to(device)
-            # start_time = time.time_ns()
-            LLIE_image = network(ll_image)
-            # LLIE_image = torch.clamp(LLIE_image, 0, 1)
-            # y = LLIE_image.permute(0, 2, 3, 1).cpu().detach().numpy()
-            # y = img_as_ubyte(y[0])
-            # end_time = time.time_ns()
-            # temp = end_time - start_time
-            # total_time += temp
+        for _ in range(itr_cnt):
+            ll_image = torch.rand(1, 3, figsize[0], figsize[1]).to(device)
+            _ = network(ll_image)
     end_t = time.time_ns()
-    # ---------------------------
-    input = torch.randn(1, 3, 400, 600).to(device)
-    # macs, params = profile(network, inputs=(input, ))
-    flops = FlopCountAnalysis(network, (input, ))
-    # print('FLOPs = ' + str(flops.total()/1000**3) + 'G')
-    # print('MACs = ' + str(macs/1000**3) + 'G')
-    # print('Params = ' + str(params/1000**2) + 'M')
-    # print('Total params: ', sum(p.numel() for p in network.parameters() if p.requires_grad))
-    
-    # ---------------------------
+    total_time = end_t - start_t
+
+    input = torch.randn(1, 3, figsize[0], figsize[1]).to(device)
+
+    flops = None
+    if FlopCountAnalysis is not None:
+        try:
+            flops = FlopCountAnalysis(network, (input, ))
+        except Exception as e:
+            if logger:
+                logger.warning(f'fvcore FlopCountAnalysis failed: {e}')
+            else:
+                print(f'Warning: fvcore FlopCountAnalysis failed: {e}')
+
+    macs, params = None, None
+    if get_model_complexity_info is not None:
+        try:
+            macs, params = get_model_complexity_info(network, (3,  figsize[0], figsize[1]), as_strings=True,
+                                                     print_per_layer_stat=False, verbose=False, output_precision=4)
+        except Exception as e:
+            if logger:
+                logger.warning(f'ptflops get_model_complexity_info failed: {e}')
+            else:
+                print(f'Warning: ptflops get_model_complexity_info failed: {e}')
+
+    total_params = sum(p.numel() for p in network.parameters() if p.requires_grad)
+
+    avg_time_ms = (total_time / 1e9) * 1e3 / itr_cnt
+    total_time_ms = ((end_t - start_t) / 1e9) * 1e3 / itr_cnt
+
     if logger:
-        logger.info('FLOPs = ' + str(flops.total()/1000**3) + ' G')
-        logger.info('Total params: ' + str(sum(p.numel() for p in network.parameters() if p.requires_grad)))
-        logger.info('Average time taken by network is : %f ms'%(total_time/1e9*1e3/itr_cnt))
-        logger.info('Average time (total) taken by network is : %f ms'%((end_t-start_t)/1e9*1e3/itr_cnt))
+        if flops is not None:
+            logger.info('FLOPs = ' + str(flops.total()/1000**3) + ' G')
+        else:
+            logger.info('FLOPs: fvcore not available')
+        logger.info('Total params: ' + str(total_params))
+        logger.info('Average time (per run) taken by network is : %f ms' % (avg_time_ms))
+        logger.info('Average time (total) taken by network is : %f ms' % (total_time_ms))
+        if macs is not None:
+            logger.info(f'ptflops: Flops: {macs}, Params: {params}')
+        else:
+            logger.info('ptflops: not available')
     else:
-        print('FLOPs = ' + str(flops.total()/1000**3) + ' G')
-        print('Total params: ' + str(sum(p.numel() for p in network.parameters() if p.requires_grad)))
-        print('Average time taken by network is : %f ms'%(total_time/1e9*1e3/itr_cnt))
-        print('Average time (total) taken by network is : %f ms'%((end_t-start_t)/1e9*1e3/itr_cnt))            
+        if flops is not None:
+            print('FLOPs = ' + str(flops.total()/1000**3) + ' G')
+        else:
+            print('FLOPs: fvcore not available')
+        print('Total params: ' + str(total_params))
+        print('Average time (per run) taken by network is : %f ms' % (avg_time_ms))
+        print('Average time (total) taken by network is : %f ms' % (total_time_ms))
+        if macs is not None:
+            print(f'ptflops: Flops: {macs}, Params: {params}')
+        else:
+            print('ptflops: not available')
 
 def demo(device, val_loader, network, out_dir):
     with torch.no_grad():
@@ -141,8 +182,7 @@ def demo(device, val_loader, network, out_dir):
                 ll_image = ll_image[:, :, :-1, :]
             if ll_image.shape[3]%2 != 0:
                 ll_image = ll_image[:, :, :, :-1]
-            LLIE_image = network(ll_image)
-            # LLIE_image, gamma, intersection,out_g, dbc, llie, t, A,  = network(ll_image, get_all=True)
+            LLIE_image, gamma, out_g, intersection, llie = network(ll_image, get_all=True)
             LLIE_image = torch.clamp(LLIE_image, 0, 1)
             LLIE_image = LLIE_image.permute(0, 2, 3, 1).cpu().detach().numpy()
             LLIE_image = img_as_ubyte(LLIE_image[0])

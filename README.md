@@ -1,198 +1,153 @@
-# [Rethinking the Atmospheric Scattering-driven Attention via Channel and Gamma Correction Priors for Low-Light Image Enhancement](https://arxiv.org/abs/2409.05274)
+# Rethinking Theoretical Illumination for Efficient Low-Light Image Enhancement
 
-This is the implementation of CPGA-Net+ based on Pytorch.  
+[![arXiv](https://img.shields.io/badge/arXiv-2409.05274-b31b1b.svg)](https://arxiv.org/abs/2409.05274)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## Abstract
-Low-light image enhancement remains a critical challenge in computer vision, and so does the lightweight design for edge devices with the computational burden for deep learning models. In this article, we introduce an extended version of CPGA-Net, termed CPGA-Net+, which incorporates an attention mechanism driven by a reformulated Atmospheric Scattering Model and effectively addresses both global and local image processing through Plug-in Attention with gamma correction. These innovations enable CPGA-Net+ to achieve superior performance on image enhancement tasks, surpassing lightweight state-of-the-art methods with high efficiency. Our results demonstrate the model's effectiveness and show the potential applications in resource-constrained environments.
+Official PyTorch implementation of **CPGA-Net+**, **BDSF**, and **CPGA-Net++**. This project introduces an extended version of the Channel-Prior and Gamma-Estimation Network, incorporating theoretically-based attention for local and global illumination processing.
 
-## Schematic Diagram
-![](Img/CPGA-Net+_Arch.png)
-## Details
-![](Img/CP_Block.png)
+---
 
-## Preparation
-1. clone the project
-2. install [Pytorch](https://pytorch.org/)
-3. execute the following instruction: 
-```
-// python=3.8
-pip install -r requirements.txt
-```
-4. make sure these modules have been successfully installed
+##  Overview
 
-# Usage
-## Data Preparation
+We propose a scalable framework for low-light image enhancement that balances efficiency and performance through three specialized versions:
 
-Prepare your data, split it into Low-Light images and Normal Light images, both image folder should be paired and the same pair of images should be have the same name. It should be almost the same as original listing way.
+1.  **CPGA-Net+ (Proposed)**: The standard version combining local and global illumination priors.
+2.  **CPGA-Net+ (BDSF)**: An ultra-lightweight variant using **Block Design Simplification (BDSF)**, reducing FLOPs by over 75% for edge device deployment.
+3.  **CPGA-Net++ (Stronger)**: A high-performance version utilizing **ConvNeXtBlocks** and **IAAF Masking** to maximize processing capabilities.
 
-## Train
+### Schematic Diagram
+![Architecture](Img/CPGA-Net+_Arch.jpg)
 
-```
-python train.py\
-    "--epochs" "200"\
-    "--net_name" "CPGA-Net+_test"\
-    "--use_gpu" "true"\
-    "--gpu" "0"
+---
 
-    "--ori_data_path" "LOLdataset/Train/high/"\
-    "--ll_data_path" "LOLdataset/Train/low/"\
-    "--val_ori_data_path" "LOLdataset/eval/eval15/high/"\
-    "--val_ll_data_path" "LOLdataset/eval/eval15/low/"\
-    "--dataset_type" "LOL-v1"\
+##  Preparation
 
-    "--num_workers" "2"\
-    "--batch_size" "16"\
-    "--val_batch_size" "1"\
-    "--lr" "1e-3"\
-        
-    //If you want to try CPGA-Net+    
-    "--plus" "true"\
-    "--is_cpgablks" "true"\
+1.  **Clone the project**
+2.  **Install dependencies** (Recommended: Python 3.8+):
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-    // Training Settings for CPGA-Net+
-    //      If skipSST = False (default), it will start Self-supervised training.
-    //      If crop_size = None (default), it will use the entire resolution for training without cropping.
-    "--skipSST" "true"\
-    "--crop_size" "256"\
+---
 
-    // --ckpt "weights\lolv2-syn\enhance_lolv1.pkl"
-```
-If you want to modify more settings of our network (CPGA-Net+), please check [config.py](./config.py)
+##  Usage
 
-## Demo
-```
-python demo_enhanced.py \
-     "--net_name" YOUR_NETNAME"  \
+### Inference (Demo)
+Results will be saved in `runs/demo/`.
 
-    "--val_ori_data_path" "LOL/TEST/HIGH"  \
-    "--val_ll_data_path" "LOL/TEST/LOW"  \
-    "--dataset_type" LOL-v1"\
-    
-    "--num_workers" 1"  \ 
-    "--val_batch_size" 1"  \ 
+| Version | Command Prefix | Required Flags | Pre-trained Weights |
+| :--- | :--- | :--- | :--- |
+| **CPGA-Net+** | `python demo.py` | `--plus` | [LOLv1](weights/lolv1/enhance_lolv1.pkl) / [v2-R](weights/lolv2-real/enhance_lolv2real.pkl) / [v2-S](weights/lolv2-syn/enhance_lolv2syn.pkl) |
+| **BDSF (Efficient)** | `python demo.py` | `--plus --efficient` | Same as CPGA-Net+ |
+| **CPGA-Net++** | `python demo.py` | `--plus --iaaf_type IAAF_masking --block_type ConvNeXtBlock` | [LOLv1](weights/CPGANet++_lolv1/CPGANet++_lolv1.pkl) / [v2-R](weights/CPGANet++_lolv2-real/CPGANet++_lolv2-real.pkl) / [v2-S](weights/CPGANet++_lolv2-syn/CPGANet++_lolv2-syn.pkl) |
 
-    //If you want to try CPGA-Net+    
-    "--plus" "true"\
-    "--is_cpgablks" "true"\
-
-    // only for CPGA-Net and not for CPGA-Net+, use DGF
-    "--efficient" //DGF version
-
-    // --ckpt "weights\lolv2-syn\enhance_lolv1.pkl"
+**Example (CPGA-Net+):**
+```bash
+python demo.py \
+    --net_name "my_test" \
+    --val_ori_data_path "path/to/high" \
+    --val_ll_data_path "path/to/low" \
+    --plus \
+    --ckpt "weights/lolv1/enhance_lolv1.pkl"
 ```
 
-## Evaluation
-### LOL evaluation
-python3
-```
-python evaluation.py \
-    "--dirA" DIR_A"\
-    "--dirB" DIR_B"
-```
-### LOL evaluation (GT-Mean)
-python3
-```
-evaluation_gtmean.py
-```
-### 5 sets of unpaired data (NIQE)
-Matlab
-```
-[NIQE] = evaluation_niqe('test_folder_path')
+### Training
+The training process consists of two stages: **Self-Supervised (SST)** for primary illumination estimation and **Supervised Learning** for detail restoration. 
+
+Current `train.py` only supports the training of CPGA-Net+. (Not include the ++ version)
+
+```bash
+python train.py \
+    --epochs 200 \
+    --net_name "CPGA-Net+_test" \
+    --use_gpu true \
+    --gpu 0 \
+    --ori_data_path "LOLdataset/Train/high/" \
+    --ll_data_path "LOLdataset/Train/low/" \
+    --val_ori_data_path "LOLdataset/eval/eval15/high/" \
+    --val_ll_data_path "LOLdataset/eval/eval15/low/" \
+    --dataset_type "LOL-v1" \
+    --num_workers 2 \
+    --batch_size 16 \
+    --val_batch_size 1 \
+    --lr 1e-3 \
+    --plus \
+    --is_cpgablks \
+    --skipSST \
+    --crop_size 256
 ```
 
-## Dataset Selection
-### For LOLv2
-lolv2 root path need only
-```
-    "--ori_data_path" "LOLv2_PATH"\
-    "--ll_data_path" "LOLv2_PATH"\
-    "--val_ori_data_path" "LOLv2_PATH"\
-    "--val_ll_data_path" "LOLv2_PATH"\
-    
-    "--dataset_type" LOL-v2-real"//"LOL-v2-real" or "LOL-v2-Syn"
-```
-### For Unpaired Data (DEMO: LIME, MEF, DICM, NPE, VV)
-```
-    "--val_ori_data_path" "Unpaired_PATH"\
-    "--val_ll_data_path" "Unpaired_PATH" \
-    
-    "--dataset_type" LOL-v1",
-```
-### For your custom images dir (Demo)
-```
-    "--val_ori_data_path" d:/datasets/custom/testing/INPUT_IMAGES",\
-    "--val_ll_data_path" d:/datasets/custom/testing/INPUT_IMAGES",\
-    
-    "--dataset_type" LOL-v1",
+> **Note**: 
+> - If `skipSST = False` (default), it will start Self-supervised training.
+> - If `crop_size = None` (default), it will use the entire resolution for training without cropping.
+
+---
+
+## 📦 Weights
+Pre-trained models for the three paired datasets are available. **Efficient (BDSF)** versions share the same weights as their corresponding **CPGA-Net+** counterparts.
+
+| Version | LOLv1 | LOLv2-Real | LOLv2-Syn / Unpaired |
+| :--- | :--- | :--- | :--- |
+| **CPGA-Net+ / BDSF** | [Link](weights/lolv1/enhance_lolv1.pkl) | [Link](weights/lolv2-real/enhance_lolv2real.pkl) | [Link](weights/lolv2-syn/enhance_lolv2syn.pkl) |
+| **CPGA-Net++** | [Link](weights/CPGANet++_lolv1/CPGANet++_lolv1.pkl) | [Link](weights/CPGANet++_lolv2-real/CPGANet++_lolv2-real.pkl) | [Link](weights/CPGANet++_lolv2-syn/CPGANet++_lolv2-syn.pkl) |
+
+---
+
+##  Benchmark Results
+
+### 1. Paired Datasets (LOLv1 / LOLv2) & Efficiency
+*Efficiency measured on 600x400 input using NVIDIA RTX 3090.*
+
+| Model | LOLv1 PSNR | LOLv1 SSIM | LOLv1 LPIPS | LOLv2-R PSNR | LOLv2-R SSIM | LOLv2-S PSNR | LOLv2-S SSIM | Params (M) | FLOPs (G) | Inference (ms) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| CPGA-Net | 20.94 | 0.748 | 0.260 | 20.79 | 0.759 | 20.68 | 0.833 | 0.025 | 6.030 | 28.256 |
+| **CPGA-Net+** | **22.53** | 0.812 | 0.205 | 20.90 | 0.800 | 23.07 | 0.907 | 0.060 | 9.356 | 16.135 |
+| **CPGA-Net+ (BDSF)** | **22.53** | 0.812 | 0.205 | 20.90 | 0.800 | 23.07 | 0.907 | **0.020** | **2.141** | **8.318** |
+| **CPGA-Net++** | 22.24 | **0.835** | **0.136** | **21.29** | **0.850** | **24.31** | **0.920** | 0.062 | 13.285 | 47.743 |
+
+### 2. Unpaired Datasets (NIQE )
+*Lower is better. Measured via Matlab NIQE.*
+
+| Model | MEF | LIME | NPE | VV | DICM | **Avg** |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| CPGA-Net | 3.8698 | 3.7068 | 3.5476 | 2.2641 | 2.6934 | 3.216 |
+| **CPGA-Net+** | 3.4968 | 3.0626 | 3.0886 | **1.9133** | 2.8282 | 2.8779 |
+| **CPGA-Net+ (BDSF)** | 3.4969 | 3.0655 | 3.0881 | 1.9136 | 2.8268 | 2.8782 |
+| **CPGA-Net++** | **3.3825** | **2.8646** | **3.0434** | 1.9302 | **2.5241** | **2.7490** |
+
+---
+
+##  Project Structure
+```text
+CPGA-Net_Plus/
+ config.py         # Hyperparameters & Model flags
+ model_cpga.py     # CPGA-Net+ / ++ Architectures
+ train.py          # Two-stage Training script
+ demo.py           # Inference script
+ data.py           # Dataset loaders
+ evaluation.py     # PSNR/SSIM/LPIPS Evaluation
+ evaluation_niqe.m # Matlab script for NIQE
 ```
 
-## Weights
-Three weights according to three paired datasets are provided.
-```
-// LOLv1
---ckpt "weights\lolv2-syn\enhance_lolv1.pkl"
-// LOLv2-real
---ckpt "weights\lolv2-real\enhance_lolv2real.pkl"
-// LOLv2-syn & 5 sets of unpaired data
---ckpt "weights\lolv2-syn\enhance_lolv2syn.pkl"
-```
+---
 
-# Results
-Flops were calculated by [fvcore](https://github.com/facebookresearch/fvcore)
-Flops and Inference time (per image) were using a input with 600×400×3 random generated tensor for testing with GPU Nvidia RTX GeForce 3090
-
-## LOLv1(15 pics)
-|      | PSNR (dB)| SSIM  | LPIPS |Flops(G) | Params(M) | Inference time|
-| ---- | ----  | ----  |  ---- | ----   | ---- | ---- |
-|  CPGA-Net   |20.94  | 0.748 | 0.260 | 6.0324 |  0.0254  | 28.256 |
-|  CPGA-Net+ (Proposed)   |22.53  | 0.812 | 0.205 |  9.356 | 0.060 | 16.13469|
-|  CPGA-Net+ (GT-mean)   |25.1970  | 0.8226 | 0.2012 |  9.356 | 0.060 | 16.13469|
-
-![](Img/lolv1.jpg)
-
-## LOLv2-real(100 pics)
-|      | PSNR (dB)| SSIM  | LPIPS |Flops(G) | Params(M) | Inference time|
-| ---- | ----  | ----  |  ---- | ----   | ---- | ---- |
-|  CPGA-Net   |20.790 |	0.759 | - | 6.0324 |  0.0254  | 28.256 |
-|  CPGA-Net+ (Proposed)   |20.90  | 0.800 | 0.261 |  9.356 | 0.060 | 16.13469|
-|  CPGA-Net+ (GT-mean)   |26.6108  | 0.8255|  0.2536 |  9.356 | 0.060 | 16.13469|
-
-![](Img/lolv2real.jpg)
-
-## LOLv2-syn(100 pics)
-|      | PSNR (dB)| SSIM  | LPIPS |Flops(G) | Params(M) | Inference time|
-| ---- | ----  | ----  |  ---- | ----   | ---- | ---- |
-|  CPGA-Net   |20.790 |	0.759 | - | 6.0324 |  0.0254  | 28.256 |
-|  CPGA-Net+ (Proposed)   |23.07 | 0.907 | 0.093 |  9.356 | 0.060 | 16.13469|
-|  CPGA-Net+ (GT-mean)   | 26.6792  |  0.9220 | 0.0876 |  9.356 | 0.060 | 16.13469|
-
-## LIME/NPE/MEF/DICM/VV (using NIQE)
-Matlab
-|      |  MEF | LIME | NPE |VV |DICM | Avg|
-| ---- | ---- |---- |---- |---- |---- | ----|
-|  CPGA-Net   | 3.8698 |3.7068|	3.5476|	2.2641|	2.6934|	3.216|	
-|  CPGA-Net+ (Proposed)   | 3.5002 |3.0662|	3.0826|	1.9133|	2.8266|	2.878|	
-
-# Acknowledge
-The idea is based on [A Lightweight Low-Light Image Enhancement Network via Channel Prior and Gamma Correction](https://github.com/Shyandram/CPGA-Net-Pytorch.git)
-Lots of code were borrowed from [pytorch version of AOD-Net](https://github.com/walsvid/AOD-Net-PyTorch)  
-Evaluation code was borrowed from [HWMNet](https://github.com/FanChiMao/HWMNet.git) and [HVI-CIDNet](https://github.com/Fediory/HVI-CIDNet/blob/master/measure.py)
-```
-@misc{weng2024rethinkingatmosphericscatteringdrivenattention,
-      title={Rethinking the Atmospheric Scattering-driven Attention via Channel and Gamma Correction Priors for Low-Light Image Enhancement}, 
-      author={Shyang-En Weng and Cheng-Yen Hsiao and Shaou-Gang Miaou},
-      year={2024},
-      eprint={2409.05274},
-      archivePrefix={arXiv},
-      primaryClass={eess.IV},
-      url={https://arxiv.org/abs/2409.05274}, 
+##  Citation
+```bibtex
+@article{weng2024rethinking,
+    title={Rethinking Theoretical Illumination for Efficient Low-Light Image Enhancement},
+    author={Weng, Shyang-En and Hsiao, Cheng-Yen and Miaou, Shaou-Gang and Christanto, Ricky},
+    journal={arXiv preprint arXiv:2409.05274},
+    year={2024}
 }
-@misc{weng2024lightweight,
-      title={A Lightweight Low-Light Image Enhancement Network via Channel Prior and Gamma Correction}, 
-      author={Shyang-En Weng and Shaou-Gang Miaou and Ricky Christanto},
-      year={2024},
-      eprint={2402.18147},
-      archivePrefix={arXiv},
-      primaryClass={eess.IV}
+
+@article{doi:10.1142/S0218001425540138,
+    author = {Weng, Shyang-En and Miaou, Shaou-Gang and Christanto, Ricky},
+    title = {A Lightweight Low-Light Image Enhancement Network via Channel Prior and Gamma Correction},
+    journal = {International Journal of Pattern Recognition and Artificial Intelligence},
+    volume = {0},
+    number = {ja},
+    pages = {null},
+    year = {2025},
+    doi = {10.1142/S0218001425540138}
 }
 ```

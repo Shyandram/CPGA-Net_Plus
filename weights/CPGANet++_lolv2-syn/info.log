@@ -1,0 +1,19 @@
+2025-06-22 12:50:06,901 - INFO - Data loaded
+2025-06-22 12:50:06,901 - INFO - Number of images: 100
+2025-06-22 12:50:19,966 - WARNING - Unsupported operator aten::gelu encountered 53 time(s)
+2025-06-22 12:50:19,966 - WARNING - Unsupported operator aten::adaptive_max_pool2d encountered 3 time(s)
+2025-06-22 12:50:19,967 - WARNING - Unsupported operator aten::add encountered 97 time(s)
+2025-06-22 12:50:19,967 - WARNING - Unsupported operator aten::sigmoid encountered 12 time(s)
+2025-06-22 12:50:19,967 - WARNING - Unsupported operator aten::mul encountered 80 time(s)
+2025-06-22 12:50:19,967 - WARNING - Unsupported operator aten::mean encountered 61 time(s)
+2025-06-22 12:50:19,967 - WARNING - Unsupported operator aten::add_ encountered 7 time(s)
+2025-06-22 12:50:19,967 - WARNING - Unsupported operator aten::min encountered 4 time(s)
+2025-06-22 12:50:19,967 - WARNING - Unsupported operator aten::sub encountered 61 time(s)
+2025-06-22 12:50:19,967 - WARNING - Unsupported operator aten::pow encountered 30 time(s)
+2025-06-22 12:50:19,967 - WARNING - Unsupported operator aten::sqrt encountered 27 time(s)
+2025-06-22 12:50:19,967 - WARNING - Unsupported operator aten::div encountered 27 time(s)
+2025-06-22 12:50:19,967 - WARNING - Unsupported operator aten::rsub encountered 3 time(s)
+2025-06-22 12:50:19,973 - INFO - FLOPs = 13.284900192 G
+2025-06-22 12:50:19,977 - INFO - Total params: 62304
+2025-06-22 12:50:19,977 - INFO - Average time taken by network is : 0.000000 ms
+2025-06-22 12:50:19,977 - INFO - Average time (total) taken by network is : 46.244622 ms

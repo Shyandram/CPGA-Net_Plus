@@ -60,10 +60,16 @@ class LLIEDataset(torch.utils.data.Dataset):
                 self.file_list.append([os.path.join(self.ori_root, key), 
                                     os.path.join(self.lowlight_root, key)])
         elif dataset_type in ['LOL-v2', 'LOL-v2-real', 'LOL-v2-Syn']:
+
+            self.lowlight_root=self.ori_root
+            
             if self.istrain:
                 mode = 'Train'
             else:
                 mode = 'Test'
+
+            if dataset_type == 'LOL-v2' and mode == 'Test':
+                dataset_type = 'LOL-v2-real'
 
             if dataset_type in ['LOL-v2-real', 'LOL-v2']:
                 Real_Low_root = join(self.lowlight_root, 'Real_captured', mode, "Low")

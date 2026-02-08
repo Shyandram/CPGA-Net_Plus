@@ -1,0 +1,166 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Train",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/train.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--epochs", "200" ,
+                "--SSTepochs", "10",
+
+                "--net_name", "cpganet-plusblk-our485-n_cpblks_2-CosineAnnealingWarmRestarts-skipSST" ,
+                "--use_gpu", "true",
+                "--gpu", "0",
+
+                "--ori_data_path", "C:/Projects/Datasets/LOLdataset/Train/high/",
+                "--ll_data_path", "C:/Projects/Datasets/LOLdataset/Train/low/",
+                "--val_ori_data_path", "C:/Projects/Datasets/LOLdataset/eval/eval15/high/" ,
+                "--val_ll_data_path", "C:/Projects/Datasets/LOLdataset/eval/eval15/low/" ,
+                "--dataset_type", "LOL-v1",
+
+                // "--ori_data_path", "C:/Projects/Datasets/UIEB/train/high/",
+                // "--haze_data_path", "C:/Projects/Datasets/UIEB/train/low/",
+                // "--val_ori_data_path", "C:/Projects/Datasets/UIEB/eval/high/" ,
+                // "--val_ll_data_path", "C:/Projects/Datasets/UIEB/eval/low/" ,
+                // "--dataset_type", "LOL-v1",
+
+                "--num_workers", "2" ,
+                "--batch_size", "16" ,
+                "--val_batch_size", "1" ,
+                "--lr", "1e-3",
+
+                "--plus", "true",
+                "--is_cpgablks", "true",
+                // "--n_cpblks", "2",
+                // "--n_resch", "8",
+                // "--n_gammach", "8",
+                // "--color_matrix", "true",
+
+                // "--lambda_hdr", "10",
+                // "--lambda_ssim", "0",
+                // "--lambda_hm", "1",
+
+                // "--efficient", "true",
+                // "--unsupervised", "true",
+                
+                "--skipSST", "true",
+                "--crop_size", "128",
+                // "--crop_size", "112",
+                // "--amp", "true",
+                
+                // "--ckpt", "models//cpganet-SST//enhance_19.pkl"
+                // "--ckpt", "weights/cpganet-plusblk-our485-n_cpblks_2-cpgablks-epoch400-CosineAnnealingWarmRestarts-skipSST-pretrained400-110/enhance_110.pkl"
+                
+            ]
+            
+        },
+        {
+            "name": "Python: Demo",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/demo.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--net_name", "cpganet-plusblk-test" ,
+                "--use_gpu", "true",
+                "--gpu", "0",
+
+                "--val_ori_data_path", "C:/Projects/Datasets/LOLdataset/eval/eval15/high/" ,
+                "--val_ll_data_path", "C:/Projects/Datasets/LOLdataset/eval/eval15/low/" ,
+                "--dataset_type", "LOL-v1",
+
+                // "--val_ori_data_path", "D:/Programs/Datasets/Test/VV/" ,
+                // "--val_ll_data_path", "D:/Programs/Datasets/Test/VV/" ,
+                // "--dataset_type", "LOL-v1",
+                // "--val_ori_data_path", "D:/Programs/Datasets/Test/MEF/" ,
+                // "--val_ll_data_path", "d:/Programs/Datasets/Test/MEF/" ,
+                // "--dataset_type", "LOL-v1",
+                // "--val_ori_data_path", "D:/Programs/Datasets/Test/LIME/" ,
+                // "--val_ll_data_path", "d:/Programs/Datasets/Test/LIME/" ,
+                // "--dataset_type", "LOL-v1",
+                // "--val_ori_data_path", "D:/Programs/Datasets/Test/DICM/" ,
+                // "--val_ll_data_path", "d:/Programs/Datasets/Test/DICM/" ,
+                // "--dataset_type", "LOL-v1",
+                // "--val_ori_data_path", "D:/Programs/Datasets/Test/NPE/" ,
+                // "--val_ll_data_path", "d:/Programs/Datasets/Test/NPE/" ,
+                // "--dataset_type", "LOL-v1",
+                // "--val_ori_data_path", "D:/Programs/Datasets/RELLISUR-Dataset/Test/LLLR" ,
+                // "--val_ll_data_path", "D:/Programs/Datasets/RELLISUR-Dataset/Test/LLLR" ,
+                // "--val_ori_data_path", "runs/test_img" ,
+                // "--val_ll_data_path", "runs/test_img" ,
+                // "--dataset_type", "LOL-v1",
+
+                "--plus", "true",
+                // "--n_cpblks", "2",
+                // "--n_resch", "8",
+                // "--n_gammach", "8",
+                "--is_cpgablks", "true",
+
+                // "--ckpt", "weights/cpganet-plusblk-lolv2syn-n_cpblks_2-cpgablks-lr1e3-epoch200-CosineAnnealingWarmRestarts-skipSST-196/enhance_196.pkl"
+                // "--ckpt", "runs/training/cpganet-plusblk-our485-n_cpblks_2-unsupervised-epoch200-CosineAnnealingWarmRestarts-skipSST/weights/enhance_34.pkl"
+                // "--ckpt", "weights/cpganet-plusblk-lolv2real-unsupervised-n_cpblks_2-cpgablks-epoch200-CosineAnnealingWarmRestarts-skipSST-11/enhance_11.pkl"
+                // "--ckpt", "weights/cpganet-plusblk-our485-n_cpblks_2-cpgablks-epoch400-CosineAnnealingWarmRestarts-skipSST-pretrained400-110/enhance_110.pkl"
+                "--ckpt", "weights/lolv1/enhance_lolv1.pkl"
+                // "--ckpt", "weights/lolv2-syn/enhance_lolv2syn.pkl"
+                // "--ckpt", "runs/training/cpganet-plusblk-our485-g-n_cpblks_2-epoch50-CosineAnnealingWarmRestarts-skipSST/weights/enhance_90.pkl"
+
+
+            ]
+        },
+        {
+            "name": "Python: evaluation",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/evaluation.py",
+            "console": "integratedTerminal",
+            "args": [
+                // "-dirB", "runs/demo/cpganet-plusblk-our485-n_cpblks_2-l1_vgg_hm-epoch200-CosineAnnealingWarmRestarts-skipSST-199",
+                // "-dirB", "results/enhance_color-llie-ResCBAM_g-purning",
+                // "-dirB", "results/enhance_color-llie-ResCBAM_g-8-dgf-distill-pre-LOLv2",
+                // "-dirB", "results/enhance_color-llie-ResCBAM_g-8-dgf-distill-pre",
+                // "-dirB", "results/enhance_color-llie-ResCBAM_g-8-dgf-distill",
+                // "-dirB", "results/LAL_BDP-llie-onlyA_A23resblk16",
+                // "-dirB", "/mnt/d/Shyandram/CPGANEt/results/enhance_color-llie-ResCBAM_g-CPGA_DN_llexpe_globalgamma256"
+                // "-dirB", "results/enhance_color-llie-ResCBAM_g-8-DGF-lolv2-new",
+                // "-dirB", "results/enhance_color-llie-ResCBAM_g-vggloss-LOLv2",
+                // "-dirB", "results/enhance_color-llie-ResCBAM_g-DGF-LOLv2",
+                // "-dirB", "/mnt/c/Users/User/Downloads/LOL_V1_Results/LOL_V1_Results",
+                "-dirB", "runs/demo/cpganet-plusblk-lolv1-test",
+                // "-dirB", "runs/demo/cpganet-plusblk-our485-n_cpblks_2-unsupervised-epoch200-CosineAnnealingWarmRestarts-skipSST-34",
+                // "-dirB", "weights/cpganet-plusblk-our485-n_cpblks_2-cpgablks-epoch400-CosineAnnealingWarmRestarts-skipSST-pretrained400-110",
+
+                // "-dirA", "/mnt/c/Datasets/LOL-v2/Real_captured/Test/Normal"
+                // "-dirA", "D:/Programs/Datasets/LOL-v2/Synthetic/Test/Normal"
+                "-dirA", "C:/Projects/Datasets/LOLdataset/eval/eval15/high/"
+            ]
+            
+        },
+        {
+            "name": "Python: evaluation_expe",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/evaluation_expe.py",
+            "console": "integratedTerminal",
+            "args": [
+                // "-dirB", "/mnt/d/Shyandram/CPGANEt/resultsresults/enhance_color-llie-ResCBAM_g-expe",
+                // "-dirB", "/mnt/d/Shyandram/CPGANEt/results/enhance_color-llie-ResCBAM_g-CPGA_DN_llexpe_new-expe",
+                // "-dirB", "/mnt/d/Shyandram/CPGANEt/results/enhance_color-llie-ResCBAM_g-CPGA_DN_llexpe_globalgamma256-expe",
+
+
+                // "-dirA", "/mnt/d/datasets/exposure error/testing/expert_a_testing_set"
+                // "-dirA", "/mnt/d/datasets/exposure error/testing/expert_b_testing_set"
+                "-dirA", "/mnt/d/datasets/exposure error/testing/expert_c_testing_set"
+                // "-dirA", "/mnt/d/datasets/exposure error/testing/expert_d_testing_set"
+                // "-dirA", "/mnt/d/datasets/exposure error/testing/expert_e_testing_set"
+            ]
+            
+        },
+        
+    ]
+}

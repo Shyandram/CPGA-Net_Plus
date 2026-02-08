@@ -5,7 +5,11 @@ kornia
 tensorboardX
 tqdm
 natsort
-scikit-image==0.19.0
+scikit-image>=0.19.0
 lpips
 torchmetrics
 guided-filter-pytorch
+ptflops
+fvcore
+opencv-python
+wandb   
