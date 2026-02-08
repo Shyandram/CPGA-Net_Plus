@@ -45,8 +45,8 @@ Results will be saved in `runs/demo/`.
 ```bash
 python demo.py \
     --net_name "my_test" \
-    --val_ori_data_path "path/to/high" \
-    --val_ll_data_path "path/to/low" \
+    --val_ori_data_path "path_to_your_img_folder" \
+    --val_ll_data_path "path_to_your_img_folder" \
     --plus \
     --ckpt "weights/lolv1/enhance_lolv1.pkl"
 ```
