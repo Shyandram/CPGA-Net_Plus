@@ -52,8 +52,6 @@ python demo.py \
 ```
 
 ### Training
-The training process consists of two stages: **Self-Supervised (SST)** for primary illumination estimation and **Supervised Learning** for detail restoration. 
-
 Current `train.py` only supports the training of CPGA-Net+. (Not include the ++ version)
 
 ```bash
